@@ -47,7 +47,29 @@ python gpu_cluster_monitor.py -u username -k ~/.ssh/id_rsa -f csv -o gpu_report.
 python gpu_cluster_monitor.py -u username -k ~/.ssh/id_rsa -w 20 -t 60 node1 node2 node3
 ```
 
+### Quick Run Scripts
 
+For convenience, platform-specific runner scripts are provided with pre-configured settings:
+
+#### Windows (`run_monitor.bat`)
+
+```batch
+# Run with console output
+run_monitor.bat
+
+# Run and save output to file
+run_monitor.bat gpu_report.csv
+```
+
+#### Linux/Mac (`run_monitor.sh`)
+
+```bash
+# Run with console output
+./run_monitor.sh
+
+# Run and save output to file
+./run_monitor.sh gpu_report.csv
+```
 
 ### Command Line Options
 
