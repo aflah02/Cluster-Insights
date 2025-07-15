@@ -1,5 +1,8 @@
 # GPU Cluster Monitor
 
+![Python Version](https://img.shields.io/badge/python-3.6%2B-blue)
+![License](https://img.shields.io/badge/license-Apache%202.0-blue)
+
 A Python script that connects to multiple cluster nodes via SSH, checks GPU status using `nvidia-smi`, and generates detailed reports of GPU usage, processes, and users.
 
 ## Features
