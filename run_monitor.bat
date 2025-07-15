@@ -2,7 +2,7 @@
 REM GPU Cluster Monitor - Quick Run Script
 REM Usage: run_monitor.bat [output_file]
 
-set USERNAME=afkhan
+set USERNAME=""
 set NODES_FILE=node_list.txt
 set OUTPUT_FORMAT=csv
 set WORKERS=20
