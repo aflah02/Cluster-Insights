@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Example usage of the GPU Cluster Monitor
+Example usage of Cluster Insights - GPU Monitoring Tool
 """
 
 from gpu_cluster_monitor import GPUMonitor

@@ -1,5 +1,5 @@
 @echo off
-REM GPU Cluster Monitor - Quick Run Script
+REM Cluster Insights - Quick Run Script
 REM Usage: run_monitor.bat [output_file]
 
 set USERNAME=""

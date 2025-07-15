@@ -1,5 +1,5 @@
 #!/bin/bash
-# GPU Cluster Monitor - Quick Run Script for Linux/Mac
+# Cluster Insights - Quick Run Script for Linux/Mac
 # Usage: ./run_monitor.sh [output_file]
 
 # Configuration - modify these variables as needed

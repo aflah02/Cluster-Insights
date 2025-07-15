@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GPU Cluster Monitoring Tool
+Cluster Insights - GPU Monitoring Tool
 
 This script connects to multiple nodes via SSH, checks GPU status using nvidia-smi,
 and generates a detailed report of GPU usage, processes, and users.
@@ -22,7 +22,7 @@ class GPUMonitor:
     def __init__(self, username: str, ssh_key_path: Optional[str] = None, 
                  password: Optional[str] = None, timeout: int = 30):
         """
-        Initialize the GPU Monitor
+        Initialize Cluster Insights GPU Monitor
         
         Args:
             username: SSH username for connecting to nodes
@@ -339,7 +339,7 @@ class GPUMonitor:
         """Generate a human-readable text report"""
         report = []
         report.append("=" * 80)
-        report.append(f"GPU Cluster Monitoring Report")
+        report.append(f"Cluster Insights - Monitoring Report")
         report.append(f"Generated at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         report.append("=" * 80)
         report.append("")
@@ -479,7 +479,7 @@ def load_nodes_from_file(file_path: str) -> List[str]:
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Monitor GPU usage across cluster nodes',
+        description='Cluster Insights - Monitor GPU usage across cluster nodes',
         epilog='''
 Examples:
   # Check specific nodes
