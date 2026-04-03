@@ -1,4 +1,5 @@
-/cmd.txt
-/node_list.txt
-personal_runner.bat
+.venv/
 Reports/
+__pycache__/
+*.pyc
+cmd.txt

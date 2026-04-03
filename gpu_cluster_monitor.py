@@ -388,8 +388,6 @@ class GPUMonitor:
                             memory = proc.get('used_memory', 'Unknown')
                             elapsed = proc.get('elapsed_time', 'Unknown')
                             report.append(f"      PID {proc.get('pid', 'Unknown')} - User: {user} - Memory: {memory} - Time: {elapsed}")
-                            if len(cmd) > 60:
-                                cmd = cmd[:57] + "..."
                             report.append(f"        Command: {cmd}")
                     else:
                         report.append(f"    No processes running")

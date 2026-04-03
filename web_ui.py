@@ -107,9 +107,17 @@ def parse_report(report_text: str) -> Dict:
                         'pid': match.group(1),
                         'user': match.group(2),
                         'memory': int(match.group(3)),
-                        'time': match.group(4)
+                        'time': match.group(4),
+                        'command': ''
                     }
                     current_gpu['processes'].append(proc)
+
+            elif current_gpu and current_gpu['processes'] and line.strip().startswith("Command:"):
+                # Command line follows PID line - capture full command
+                cmd = line.replace("Command:", "").strip()
+                if len(cmd) > 100:
+                    cmd = cmd[:97] + "..."
+                current_gpu['processes'][-1]['command'] = cmd
 
             elif current_gpu and line.strip().startswith("No processes running"):
                 # No processes
@@ -120,15 +128,18 @@ def parse_report(report_text: str) -> Dict:
 
 def get_gpu_type(node_name: str) -> str:
     """Extract GPU type from node name (e.g., sws-2a100-01 -> A100)"""
-    if 'a100' in node_name.lower():
-        return 'A100'
-    elif 'h100' in node_name.lower():
+    name = node_name.lower()
+    if 'h100' in name:
         return 'H100'
-    elif 'a40' in node_name.lower():
+    elif 'a100' in name:
+        return 'A100'
+    elif 'a40' in name:
         return 'A40'
-    elif 'l40' in node_name.lower():
+    elif 'l40' in name:
         return 'L40'
-    return 'Unknown'
+    elif 'v100' in name or 'volta' in name:
+        return 'V100'
+    return 'Other'
 
 
 def group_by_gpu_type(nodes: Dict) -> Dict:

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cluster Insights - GPU Monitor</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231a1a2e' width='100' height='100' rx='15'/><rect fill='%2300d4ff' x='20' y='30' width='60' height='40' rx='5'/><rect fill='%231a1a2e' x='25' y='35' width='20' height='15' rx='2'/><rect fill='%231a1a2e' x='55' y='35' width='20' height='15' rx='2'/><rect fill='%232ed573' x='30' y='60' width='15' height='5' rx='2'/><rect fill='%23ff4757' x='55' y='60' width='15' height='5' rx='2'/></svg>">
     <style>
         * {
             box-sizing: border-box;
@@ -327,6 +328,8 @@
             background: #1a1a2e;
             border-radius: 5px;
             font-size: 12px;
+            cursor: pointer;
+            position: relative;
         }
 
         .process-info .user {
@@ -337,6 +340,55 @@
         .process-info .time {
             color: #888;
             margin-left: 10px;
+        }
+
+        .process-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background: #0f3460;
+            border: 1px solid #00d4ff;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 11px;
+            z-index: 100;
+            min-width: 250px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .process-info:hover .process-tooltip {
+            display: block;
+        }
+
+        .process-tooltip .tooltip-row {
+            margin-bottom: 6px;
+        }
+
+        .process-tooltip .tooltip-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .process-tooltip .tooltip-label {
+            color: #888;
+            margin-right: 8px;
+        }
+
+        .process-tooltip .tooltip-value {
+            color: #fff;
+            word-break: break-all;
+        }
+
+        .process-tooltip .tooltip-cmd {
+            font-family: monospace;
+            background: #1a1a2e;
+            padding: 6px 8px;
+            border-radius: 4px;
+            margin-top: 4px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 80px;
+            overflow-y: auto;
         }
 
         .error-message {
@@ -374,7 +426,7 @@
             <h1>Cluster Insights</h1>
             <div class="header-controls">
                 <label class="auto-refresh-toggle">
-                    <input type="checkbox" id="autoRefresh" checked>
+                    <input type="checkbox" id="autoRefresh">
                     <span class="toggle-switch"></span>
                     Auto-refresh
                 </label>
@@ -529,8 +581,13 @@
                 groups[gpuType].push({ name, ...node });
             });
 
-            // Sort groups by type name
-            const sortedTypes = Object.keys(groups).sort();
+            // Sort groups by GPU type priority
+            const sortOrder = ['H100', 'A100', 'A40', 'L40', 'V100', 'Other'];
+            const sortedTypes = Object.keys(groups).sort((a, b) => {
+                const aIdx = sortOrder.indexOf(a);
+                const bIdx = sortOrder.indexOf(b);
+                return (aIdx === -1 ? 999 : aIdx) - (bIdx === -1 ? 999 : bIdx);
+            });
 
             sortedTypes.forEach(gpuType => {
                 const nodes = groups[gpuType];
@@ -563,10 +620,11 @@
 
         function getGpuType(nodeName) {
             const name = nodeName.toLowerCase();
-            if (name.includes('a100')) return 'A100';
             if (name.includes('h100')) return 'H100';
+            if (name.includes('a100')) return 'A100';
             if (name.includes('a40')) return 'A40';
             if (name.includes('l40')) return 'L40';
+            if (name.includes('v100') || name.includes('volta')) return 'V100';
             return 'Other';
         }
 
@@ -601,11 +659,20 @@
                     gpu.processes.forEach(proc => {
                         gpusHtml += `
                             <div class="process-info">
-                                <span class="user">${proc.user}</span>
-                                <span>(${proc.memory} MiB)</span>
-                                <span class="time">${proc.time}</span>
-                            </div>
-                        `;
+                                <span class="user">${proc.user || 'Unknown'}</span>
+                                <span>(${proc.memory || 0} MiB)</span>
+                                <span class="time">${proc.time || '?'}</span>
+                                <div class="process-tooltip">
+                                    <div class="tooltip-row">
+                                        <span class="tooltip-label">PID:</span>
+                                        <span class="tooltip-value">${proc.pid || '?'}</span>
+                                    </div>
+                                    <div class="tooltip-row">
+                                        <span class="tooltip-label">Command:</span>
+                                        <div class="tooltip-cmd">${proc.command || proc.process_name || 'Unknown'}</div>
+                                    </div>
+                                </div>
+                            </div>`;
                     });
                 }
 
