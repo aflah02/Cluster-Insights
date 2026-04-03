@@ -1,1 +1,2 @@
 paramiko>=2.7.0
+flask>=2.0.0

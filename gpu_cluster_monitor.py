@@ -328,12 +328,15 @@ class GPUMonitor:
         Returns:
             Formatted report string
         """
+        # Sort results by hostname for consistent output
+        sorted_results = sorted(results, key=lambda x: x['hostname'])
+        
         if output_format == 'json':
-            return json.dumps(results, indent=2)
+            return json.dumps(sorted_results, indent=2)
         elif output_format == 'csv':
-            return self._generate_csv_report(results)
+            return self._generate_csv_report(sorted_results)
         else:
-            return self._generate_text_report(results)
+            return self._generate_text_report(sorted_results)
 
     def _generate_text_report(self, results: List[Dict]) -> str:
         """Generate a human-readable text report"""
@@ -553,6 +556,9 @@ Examples:
         print(f"  - {len(args.nodes)} nodes from command line")
     
     results = monitor.check_multiple_nodes(unique_nodes, max_workers=args.workers)
+    
+    # Sort results by node name (hostname) for consistent output
+    results.sort(key=lambda x: x['hostname'])
     
     # Generate report
     report = monitor.generate_report(results, output_format=args.format)
